@@ -38,7 +38,7 @@ Actor1Geo_Type;35
 Actor1Geo_FullName;36
 Actor1Geo_CountryCode;37
 Actor1Geo_ADM1Code;38
-Actor1Geo_ADM2Code(UK);39
+Actor1Geo_ADM2Code;39
 Actor1Geo_Lat;40
 Actor1Geo_Long;41
 Actor1Geo_FeatureID;42
@@ -46,7 +46,7 @@ Actor2Geo_Type;43
 Actor2Geo_FullName;44
 Actor2Geo_CountryCode;45
 Actor2Geo_ADM1Code;46
-Actor2Geo_ADM2Code(UK);47
+Actor2Geo_ADM2Code;47
 Actor2Geo_Lat;48
 Actor2Geo_Long;49
 Actor2Geo_FeatureID;50
@@ -54,7 +54,7 @@ ActionGeo_Type;51
 ActionGeo_FullName;52
 ActionGeo_CountryCode;53
 ActionGeo_ADM1Code;54
-ActionGeo_ADM2Code(UK);55
+ActionGeo_ADM2Code;55
 ActionGeo_Lat;56
 ActionGeo_Long;57
 ActionGeo_FeatureID;58
