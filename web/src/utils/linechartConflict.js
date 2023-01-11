@@ -5,14 +5,12 @@ export default function (data, country) {
     const padding = 50;
     const legdmarg = 100;
 
-    const width = 100;
-    const height = 100;
+    const width = 400;
+    const height = 200;
 
     d3.select("#linechart").selectAll("*").remove();
     let svg = d3.select("#linechart").attr("width", width + padding * 2 + legdmarg).attr("height", height + padding * 2);
-    console.log(data)
     data = data.filter(item => item.ActionGeo_CountryCode == country).map(d => ({ SQLDATE: d.SQLDATE, QuadClass: ({ "Verbal Cooperation": "Cooperation", "Material Cooperation": "Cooperation", "Verbal Conflict": "Conflict", "Material Conflict": "Conflict" })[d.QuadClass] }))
-    console.log(data)
     let dataCoop = d3.group(data, d => d.QuadClass).get("Cooperation")
     let dataConf = d3.group(data, d => d.QuadClass).get("Conflict")
     dataCoop = Array.from(d3.group(dataCoop, d => d.SQLDATE)).map(d => ({ SQLDATE: d[0], count: d[1].length }))
@@ -61,6 +59,11 @@ export default function (data, country) {
             .attr("y", padding + lgd_itm++ * 20 - 15)
             .text(i)
     }
+
+    svg.append("text")
+            .attr("x", 20)
+            .attr("y", 20)
+            .text("Représente nombre d'interaction de la " + country + " avec les autres pays")
 
     svg.append("g")
         .attr("transform", `translate(${padding},${height + padding})`)

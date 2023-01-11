@@ -24,7 +24,8 @@ export default {
   name: "HelloWorld",
   data() {
     return {
-      data: []
+      data: [],
+      selectedCountry: [],
     }
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
           "AvgTone": parseFloat(item.AvgTone),
         }
       });
-      this.createMap(this.data)
+      this.createMap(this.data, this.selectedCountry)
       this.linechart(this.data, 'FR');
     },
     test,
