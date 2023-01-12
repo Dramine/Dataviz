@@ -2,10 +2,10 @@ import world from '../assets/countries.json'
 import * as d3 from 'd3'
 import linechart from './linechartConflict';
 export default function (data, selectedCountry) {
-    const width = 800, height = 500;
+    const width = 700, height = 500;
     const svg = d3.select("#map").attr("width", width).attr("height", height);
     // svg.append("svg")
-    // const g = svg.append("g");
+    
     const num_event_by_country = data
         .map((event) => event.ActionGeo_CountryCode)
         .reduce(function (x, y) {
@@ -17,21 +17,39 @@ export default function (data, selectedCountry) {
         .domain([0, d3.max(Object.values(num_event_by_country))])
         .range(["#95d0fc", "#2c6fbb"])
 
+	const g = svg.append("g")
+	.call(d3.zoom()
+        .on("zoom", function (event) {
+            countries.attr("transform", event.transform)
+        })
+        .scaleExtent([1, 8])
+    );
+	 /* .on("wheel.zoom",function(){
+        var currScale = projection.scale();
+        var newScale = currScale - 2*event.deltaY;
+        var currTranslate = projection.translate();
+        var coords = projection.invert([event.offsetX, event.offsetY]);
+        projection.scale(newScale);
+        var newPos = projection(coords);
 
-    var projection = d3.geoMercator()
-        .fitExtent([[20, 20], [width, height]], world);
+        projection.translate([currTranslate[0] + (event.offsetX - newPos[0]), currTranslate[1] + (event.offsetY - newPos[1])]);
+        g.selectAll("path").attr("d", path);
+
+    }); */
+    
+
+    var projection = d3.geoMercator()  
+		.scale(200)
+    .translate([width/2, height/2]);
 
     var path = d3.geoPath()
         .projection(projection);
-    console.log(data)
-    var countries = svg.selectAll("path")
+    
+    var countries = g.selectAll("path")
         .data(world.features)
         .enter()
         .append("path")
         .attr("d", path)
-        // .style("fill", d => {
-        //   return color(parsed_data.NumMentions)
-        // })
         .style("stroke-width", "1")
         .style("fill", (d) => {
             if (d['properties']['ISO_A2'] != '-')
@@ -63,15 +81,13 @@ export default function (data, selectedCountry) {
                 })
                 selectedCountry.splice(selectedCountry.indexOf(iso_country))
             }
-        })
-    // .on("mouseover", function (e, d) {
-    //     d3.select(this).transition()
-    //         .duration('50')
-    //         .attr('opacity', '.6')
-
-    // })
-    // .on("mouseleave", function (e, d) {
-    //     d3.select(this)
-    //         .attr('opacity', '1');
-    // })
+        });
+		
+		/* .call(d3.drag().on("drag", function(){
+        var currTranslate = projection.translate();
+        projection.translate([currTranslate[0] + d3.event.dx,
+                              currTranslate[1] + d3.event.dy]);
+        g.selectAll("path").attr("d", path);
+    }));   */ 
+   
 }
