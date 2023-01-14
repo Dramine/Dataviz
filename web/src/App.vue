@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main class="main">
       <HelloWorld />
     </v-main>
   </v-app>
@@ -13,3 +13,12 @@ export default {
   components: { HelloWorld },
 }
 </script>
+
+<style>
+
+.main {
+  background-color: #212326;
+  color:white;
+}
+
+</style>

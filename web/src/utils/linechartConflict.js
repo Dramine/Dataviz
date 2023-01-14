@@ -6,7 +6,7 @@ export default function (data, country) {
     const legdmarg = 100;
 
     const width = 400;
-    const height = 200;
+    const height = 170;
 
     d3.select("#linechart").selectAll("*").remove();
     let svg = d3.select("#linechart").attr("width", width + padding * 2 + legdmarg).attr("height", height + padding * 2);
@@ -58,12 +58,14 @@ export default function (data, country) {
             .attr("x", width + 2 * padding + 8)
             .attr("y", padding + lgd_itm++ * 20 - 15)
             .text(i)
+            .style('fill', 'white')
     }
 
     svg.append("text")
             .attr("x", 20)
             .attr("y", 20)
             .text("Représente nombre d'interaction de la " + country + " avec les autres pays")
+            .style('fill', 'white')
 
     svg.append("g")
         .attr("transform", `translate(${padding},${height + padding})`)
