@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-
+import {getRout} from "./api.js"
 let main_event_class = {
     '1': 'Verbal Cooperation',
     '2': 'Material Cooperation',
@@ -7,7 +7,11 @@ let main_event_class = {
     '4': 'Material Conflict'
 };
 
-export default function (donnees, code_pays, width, height) {
+export default async function ( code_pays) {
+    let donnees = await getRout('/api/event/bycountry/US');
+    
+    var height = 400;
+    var width = 600;
     const res = Test(donnees, code_pays);
     let data = res.slice(0, 1);
     console.log(data)

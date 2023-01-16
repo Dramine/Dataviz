@@ -1,10 +1,13 @@
 import world from '../assets/countries.json'
 import * as d3 from 'd3'
 import linechart from './linechartConflict';
+import stackedBarChart from './stackedBarChart';
 export default function (data, selectedCountry) {
 
 
     const width = 700, height = 500;
+    var counter = 0;
+    var maxRegions = 2;
     const svg = d3.select("#map").attr("width", width).attr("height", height);
     // svg.append("svg")
     const total_event_by_country = num_event_by_country(data)
@@ -22,7 +25,7 @@ export default function (data, selectedCountry) {
 
     const color = d3.scaleLinear()
         .domain([0, d3.max(Object.values(total_event_by_country))])
-        .range(["#95d0fc", "#2c6fbb"])
+        .range(["#173745", "#6cc2f2"])
 
     const g = svg.append("g")
         .call(d3.zoom()
@@ -46,24 +49,63 @@ export default function (data, selectedCountry) {
         .attr("d", path)
         .style("stroke-width", "1")
         .style("fill", (d) => {
-            if (d['properties']['ISO_A2'] != '-')
-                return color(total_event_by_country[d['properties']['ISO_A2']])
-            return 'black';
+            //if (d['properties']['ISO_A2'] != '-')
+            return color(total_event_by_country[d.properties.ISO_A2])
+            //return 'black';
         })
 
-        .on("mouseover",  (e,d)=> {
+        .on("mouseover", (e, d) => {
 
             d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(d.properties.ADMIN)
         })
 
         .on("mousemove", function (e) {
 
-            root.style.setProperty("--mouse-x", `${e.clientX +15}px`);
-            root.style.setProperty("--mouse-y", `${e.clientY+15}px`);
+            root.style.setProperty("--mouse-x", `${e.clientX + 15}px`);
+            root.style.setProperty("--mouse-y", `${e.clientY + 15}px`);
         })
         .on("mouseout", function () { d3.select('#tooltip').style('opacity', 0) })
 
         .on('click', function (e, d) {
+            // if 2 countries are selected we can deselect and it will be recolored to its original  
+            if (counter == 2) {
+                var selected = d3.select(this);
+                if (d3.select(this).style("fill") === "yellow") {
+                    counter--;
+                    selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A2']]); });
+                    
+                }
+
+            } else if (counter < maxRegions && counter >= 0) {
+                var selected = d3.select(this);
+                // deselect a country and give it back its color 1 when only one was selected
+                if (d3.select(this).style("fill") === "yellow") {
+                    counter--;
+                    selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A2']]); });
+                    d3.select("#linechart").selectAll("*").remove();
+                    d3.select("#stackedchart").selectAll("*").remove();
+                }
+                // select a country or even 2 
+                else {
+                    if (counter == 0) {
+                        d3.select(this).style("fill", "yellow")
+                        counter++;
+                        linechart(d.properties.ISO_A2);
+                        stackedBarChart(d.properties.ISO_A2); 
+                    }else{
+                        console.log("im executed")
+                        d3.select(this).style("fill", "yellow")
+                        counter++;
+                        d3.select("#linechart").selectAll("*").remove();
+                         
+                    }
+
+                }
+
+
+            }
+            console.log(counter)
+        })/* 
             const iso_country = d['properties']['ISO_A2']
             if (selectedCountry.length < 2) {
                 d3.select(this).style("fill", "yellow")
@@ -71,9 +113,9 @@ export default function (data, selectedCountry) {
                     selectedCountry.push(iso_country)
                 else {
                     d3.select(this).style("fill", (d) => {
-                        if (d['properties']['ISO_A2'] != '-')
+                       // if (d['properties']['ISO_A2'] != '-')
                             return color(total_event_by_country[d['properties']['ISO_A2']])
-                        return 'black';
+                        //return 'black';
                     })
                     selectedCountry.splice(selectedCountry.indexOf(iso_country))
                 }
@@ -94,8 +136,8 @@ export default function (data, selectedCountry) {
                                     return 'yellow';
                                 }
                             }
-                            else
-                                return 'black';
+                            //else
+                               // return 'black';
                         });
                 }
                 if (selectedCountry.length == 1) // si un seul pay est sélécitonnée draw linechart
@@ -109,12 +151,12 @@ export default function (data, selectedCountry) {
                 })
                 selectedCountry.splice(selectedCountry.indexOf(iso_country))
             }
-        });
+        }); */
 }
 
 const num_event_by_country = (event) => event
-        .map((event2) => event2.actor1geo_countrycode)
-        .reduce(function (x, y) {
-            x[y] ? (x[y] = x[y] + 1) : (x[y] = 1);
-            return x;
-        }, {});
+    .map((event2) => event2.actor1geo_countrycode)
+    .reduce(function (x, y) {
+        x[y] ? (x[y] = x[y] + 1) : (x[y] = 1);
+        return x;
+    }, {});
