@@ -93,8 +93,8 @@ export default function (data, selectedCountry) {
                     if (counter == 0) {
                         d3.select(this).style("fill", "yellow")
                         counter++;
-                        linechart(d.properties.ISO_A2);
-                        stackedBarChart(d.properties.ISO_A2); 
+                        // linechart(d.properties.ISO_A3);
+                        stackedBarChart(d.properties.ISO_A3); 
                     }else{
                         console.log("im executed")
                         d3.select(this).style("fill", "yellow")

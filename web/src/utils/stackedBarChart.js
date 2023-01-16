@@ -7,22 +7,24 @@ let main_event_class = {
     '4': 'Material Conflict'
 };
 
-export default async function ( code_pays) {
+export default async function (code_pays) {
     console.log("function stacked")
     console.log(code_pays)
-    let donnees = await getRout('/api/event/bycountry/US');
-    donnees = donnees.map(item => {return {...item, quadclass: main_event_class[item.quadclass]}})
-    console.log(donnees);
+    // let donnees = await getRout('/api/event/bycountry/USA');
+    // donnees = donnees.map(item => {return {...item, quadclass: main_event_class[item.quadclass]}})
+    // console.log(donnees);
     var height = 400;
     var width = 600;
-    const res = Test(donnees, code_pays);
+    // const res = Test(donnees, code_pays);
+    let res = await getRout('/api/event/barchart/' + code_pays)
+    console.log(res)
     let data = res.slice(0, 5);
     console.log(data)
     //data = modifyArray(data, traitement_codepays)
 
     let svg = d3.select('#stackedchart');
     let margin = { top: 20, right: 20, bottom: 30, left: 40 };
-    width = width - margin.left - margin.right;
+    width = width - margin.left + margin.right;
     height = height - margin.top - margin.bottom;
     let g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

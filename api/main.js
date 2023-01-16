@@ -26,14 +26,14 @@ db.connect()
 app.get('/api/event/bycountry/:country', async (req, res) => {
   let cc = req.params.country;
   let sqlrequest;
-  if (!cc || cc.length != 2) {
+  if (!cc || cc.length != 3) {
     res.status(400).send();
     return;
   }
-  
+
   cc = cc.toUpperCase();
   sqlrequest = 'SELECT * FROM event where actor1countrycode=$1 LIMIT 10000';
-  
+
   let result = await db.any(sqlrequest, cc);
   res.status(200).json(result);
 });
@@ -112,6 +112,22 @@ app.get('/api/event/map', async (req, res) => {
 
 app.get('/api/event/map/count', async (req, res) => {
   let result = await db.any('SELECT actor2geo_countrycode, count(actor2geo_type), avg(goldsteinscale) FROM event where Actor1Geo_Type = 1  AND Actor2Geo_Type = 1 group by actor2geo_countrycode')
+  res.status(200).json(result);
+});
+
+app.get('/api/event/barchart/:country', async (req, res) => {
+  country = req.params.country;
+  console.log(country)
+  if (!country || country.length != 3) {
+    res.status(400).send();
+    return;
+  }
+  let request = `SELECT actor2countrycode as name, COUNT(CASE WHEN quadclass = 1 THEN 1 END) as "1", COUNT(CASE WHEN quadclass = 2 THEN 1 END) as "2", COUNT(CASE WHEN quadclass = 3 THEN 1 END) as "3", COUNT(CASE WHEN quadclass = 4 THEN 1 END) as "4",COUNT(*) as total
+                FROM event
+                WHERE actor1countrycode = $1 AND actor2countrycode != actor1countrycode
+                GROUP BY actor2countrycode
+                ORDER BY total DESC`
+  let result = await db.any(request, country)
   res.status(200).json(result);
 });
 
