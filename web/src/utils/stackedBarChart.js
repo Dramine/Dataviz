@@ -5,12 +5,12 @@ let main_event_class = {
     '2': 'Material Cooperation',
     '3': 'Verbal Conflict',
     '4': 'Material Conflict'
-  };
+};
 
 export default function (donnees, code_pays, width, height) {
     const res = Test(donnees, code_pays);
-    let data = res.slice(0, 5);
-
+    let data = res.slice(0, 1);
+    console.log(data)
     //data = modifyArray(data, traitement_codepays)
 
     let svg = d3.select('#stackedchart');
@@ -74,7 +74,7 @@ export default function (donnees, code_pays, width, height) {
         .attr("text-anchor", "start")
         .style('fill', 'white')
         .text("Nombre év");
-        
+
 
     var legend = g.append("g")
         .attr("font-family", "sans-serif")
@@ -104,15 +104,10 @@ function Test(data, code_pays) {
     var arr = []
     var keys = []
     const donnees = data.filter(d => d.Actor1CountryCode === code_pays)
-    const data2 = d3.rollup(donnees, g => g.length, d => d.Actor2CountryCode, d => d.QuadClassch)
+    const data2 = d3.rollup(donnees, g => g.length, d => d.Actor2CountryCode, d => d.QuadClass)
     console.log(data2)
     for (const [name, value] of data2) {
         var obj1 = Object.fromEntries(value);
-        "Renommage des propriétés"
-        for (let i = 1; i < 5; i++) {
-            delete Object.assign(obj1, { [main_event_class[i]]: obj1[i] })[i];
-        }
-
         "Calcul du Total"
         const values = Object.values(obj1);
         var total = values.reduce((accumulator, value) => {
@@ -128,6 +123,7 @@ function Test(data, code_pays) {
     }
 
     data = arr;
+    console.log(arr)
     let obj = data.reduce((res, item) => ({ ...res, ...item }));
     let cles = Object.keys(obj);
 

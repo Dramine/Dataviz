@@ -57,11 +57,14 @@
     </v-row>
     <v-row class="mb-0">
       <v-col>
+        <v-select v-if="date && date.length > 0 && selectedDate != ''" :items="date" v-model="selectedDate" />
         <svg id="map" class="bg-white">
         </svg>
       </v-col>
       <v-col>
-        <svg id="stackedchart"></svg>
+        <div id="test">
+          <svg id="stackedchart"></svg>
+        </div>
         <svg id="linechart"></svg>
       </v-col>
     </v-row>
@@ -70,50 +73,39 @@
 
 <script lang="js">
 import * as d3 from 'd3'
-import { defineComponent } from 'vue'
-import world from '../assets/countries.json'
 import test from '../utils/grapahtest'
 import createMap from '../utils/map'
 import linechart from '../utils/linechartConflict';
 import stackedBarChart from '@/utils/stackedBarChart';
+import { getRoute, getDate } from '../utils/api';
 export default {
   name: "HelloWorld",
   data() {
     return {
+      selectedDate: '',
       data: [],
       selectedCountry: [],
+      date: [],
     }
+  },
+  watch: {
+    // selectedDate: async function (newValue, oldValue) {
+    //   console.log(newValue)
+    //   this.data = await getRoute('/api/event/byday/' + newValue)
+    //   this.createMap(this.data, this.selectedCountry);
+    // }
   },
   methods: {
     async loadData() {
-      this.data = await d3.csv('sample.csv');
-      let parseTime = d3.timeParse("%Y%m%d");
-      let main_event_class = {
-        '1': 'Verbal Cooperation',
-        '2': 'Material Cooperation',
-        '3': 'Verbal Conflict',
-        '4': 'Material Conflict'
-      };
-      this.data = this.data.map(function (item) {
-        return {
-          ...item,
-          "GLOBALEVENTID": parseInt(item.GLOBALEVENTID),
-          "SQLDATE": parseTime(item.SQLDATE),
-          "Actor1Geo_Type": parseInt(item.Actor1Geo_Type),
-          "Actor2Geo_Type": parseInt(item.Actor2Geo_Type),
-          "ActionGeo_Type": parseInt(item.ActionGeo_Type),
-          "IsRootEvent": parseInt(item.IsRootEvent),
-          "QuadClass": main_event_class[parseInt(item.QuadClass)],
-          "GoldsteinScale": parseInt(item.GoldsteinScale),
-          "NumMentions": parseInt(item.NumMentions),
-          "NumSources": parseInt(item.NumSources),
-          "NumArticles": parseInt(item.NumArticles),
-          "AvgTone": parseFloat(item.AvgTone),
-        }
-      });
+      let res = await getDate();
+      // console.log(res[0].sqldate.toString())
+      this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('00:00:00')[0], 'value': item.sqldate.toString().split('T')[0] } });
+      this.selectedDate = this.date[this.date.length - 1];
+      this.data = await getRoute('/api/event/byday/' + '2021-12-28');
+
       this.createMap(this.data, this.selectedCountry);
-      this.linechart(this.data, 'FR');
-      this.stackedBarChart(this.data, 'USA', 500, 300);
+      // this.linechart(this.data, 'FR');
+      // this.stackedBarChart(this.data, 'USA', 500, 300);
     },
     test,
     createMap,
