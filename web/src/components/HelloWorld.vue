@@ -57,8 +57,9 @@
     </v-row>
     <v-row class="mb-0">
       <v-col>
-        <svg id="map" class="bg-white">
-        </svg>
+        <div id="test"><svg id="map" class="bg-white">
+          </svg></div>
+
       </v-col>
       <v-col>
         <svg id="stackedchart"></svg>
