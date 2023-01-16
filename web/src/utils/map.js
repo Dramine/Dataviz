@@ -27,12 +27,15 @@ export default function (data, selectedCountry) {
         .domain([0, d3.max(Object.values(total_event_by_country))])
         .range(["#173745", "#6cc2f2"])
 
-    const g = svg.append("g")
+    const g = svg.append("g");
+
         svg.call(d3.zoom()
             .on("zoom", function (event) {
                 countries.attr("transform", event.transform)
             })
+            .translateExtent([[-300, -400], [1000, 500]])
             .scaleExtent([1, 8])
+            
         );
 
     var projection = d3.geoMercator()
