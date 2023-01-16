@@ -7,9 +7,7 @@ export default function (data, selectedCountry) {
     const width = 700, height = 500;
     const svg = d3.select("#map").attr("width", width).attr("height", height);
     // svg.append("svg")
-<<<<<<< HEAD
     const total_event_by_country = num_event_by_country(data)
-=======
     d3.select('#test').append('div')
         .attr('id', 'tooltip')
         .style("border", "solid 3px black")
@@ -22,14 +20,6 @@ export default function (data, selectedCountry) {
 
     const root = document.documentElement
 
-    const num_event_by_country = data
-        .map((event) => event.ActionGeo_CountryCode)
-        .reduce(function (x, y) {
-            x[y] ? (x[y] = x[y] + 1) : (x[y] = 1);
-            return x;
-        }, {});
-
->>>>>>> b88dea03caca62d58cd27b2d33780c59daa713e6
     const color = d3.scaleLinear()
         .domain([0, d3.max(Object.values(total_event_by_country))])
         .range(["#95d0fc", "#2c6fbb"])
@@ -42,11 +32,6 @@ export default function (data, selectedCountry) {
             .scaleExtent([1, 8])
         );
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> b88dea03caca62d58cd27b2d33780c59daa713e6
     var projection = d3.geoMercator()
         .scale(200)
         .translate([width / 2, height / 2]);
@@ -54,11 +39,6 @@ export default function (data, selectedCountry) {
     var path = d3.geoPath()
         .projection(projection);
 
-<<<<<<< HEAD
-=======
-    //d3.select("#map").append('div')
-
->>>>>>> b88dea03caca62d58cd27b2d33780c59daa713e6
     var countries = g.selectAll("path")
         .data(world.features)
         .enter()
@@ -97,7 +77,6 @@ export default function (data, selectedCountry) {
                     })
                     selectedCountry.splice(selectedCountry.indexOf(iso_country))
                 }
-<<<<<<< HEAD
                 if (selectedCountry.length == 1) {  // si un seul pay est sélécitonnée draw linechart
                     console.log(data)
                     linechart(iso_country);
@@ -119,10 +98,8 @@ export default function (data, selectedCountry) {
                                 return 'black';
                         });
                 }
-=======
                 if (selectedCountry.length == 1) // si un seul pay est sélécitonnée draw linechart
                     linechart(data, iso_country);
->>>>>>> b88dea03caca62d58cd27b2d33780c59daa713e6
             }
             else if (selectedCountry.includes(iso_country)) {
                 d3.select(this).style("fill", (d) => {
@@ -132,17 +109,11 @@ export default function (data, selectedCountry) {
                 })
                 selectedCountry.splice(selectedCountry.indexOf(iso_country))
             }
-<<<<<<< HEAD
         });
-=======
-        })
-
-
->>>>>>> b88dea03caca62d58cd27b2d33780c59daa713e6
 }
 
 const num_event_by_country = (event) => event
-        .map((event) => event.actor1geo_countrycode)
+        .map((event2) => event2.actor1geo_countrycode)
         .reduce(function (x, y) {
             x[y] ? (x[y] = x[y] + 1) : (x[y] = 1);
             return x;
