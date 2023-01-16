@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { getRoute } from './api'
+import { getRoute, getRout } from './api'
 
 let main_event_class = {
     '1': 'Verbal Cooperation',
@@ -18,21 +18,36 @@ export default async function (country) {
     d3.select("#linechart").selectAll("*").remove();
     let svg = d3.select("#linechart").attr("width", width + padding * 2 + legdmarg).attr("height", height + padding * 2);
 
-    let data = await getRoute('/api/event/bycountry/USA');
+    // let data = await getRoute('/api/event/bycountry/USA');
 
-    data = data.filter(item => item.actiongeo_countrycode == country).map(d => ({ sqldate: d.sqldate, quadclass: ({ "Verbal Cooperation": "Cooperation", "Material Cooperation": "Cooperation", "Verbal Conflict": "Conflict", "Material Conflict": "Conflict" })[d.quadclass] }))
+    // data = data.filter(item => item.actiongeo_countrycode == country).map(d => ({ sqldate: d.sqldate, quadclass: ({ "Verbal Cooperation": "Cooperation", "Material Cooperation": "Cooperation", "Verbal Conflict": "Conflict", "Material Conflict": "Conflict" })[d.quadclass] }))
 
     //console.log(d3.group(data, d => d.quadclass))
-    let dataCoop = d3.group(data, d => d.quadclass).get("Cooperation")
-    let dataConf = d3.group(data, d => d.quadclass).get("Conflict")
-    dataCoop = Array.from(d3.group(dataCoop, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))
-    dataConf = Array.from(d3.group(dataConf, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))
+    // let dataCoop = d3.group(data, d => d.quadclass).get("Cooperation")
+    // let dataConf = d3.group(data, d => d.quadclass).get("Conflict")
+    // dataCoop = Array.from(d3.group(dataCoop, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))
+    // dataConf = Array.from(d3.group(dataConf, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))
 
-    dataCoop = dataCoop.map(d => ({ sqldate: d.sqldate, count: d.count, type: "Cooperation" }))
-    dataConf = dataConf.map(d => ({ sqldate: d.sqldate, count: d.count, type: "Conflict" }))
+    // dataCoop = dataCoop.map(d => ({ sqldate: d.sqldate, count: d.count, type: "Cooperation" }))
+    // dataConf = dataConf.map(d => ({ sqldate: d.sqldate, count: d.count, type: "Conflict" }))
+    let parseTime = d3.timeParse("%Y-%m-%d");
+    let dataCoop = (await getRout('/api/event/linechart/' + country + '/cooperation')).map(item => {
+        return {
+            sqldate: parseTime(item.sqldate.split('T')[0]),
+            count: item.count,
+            type: "Cooperation"
+        }
+    })
+    let dataConf = (await getRout('/api/event/linechart/' + country + '/conflict')).map(item => {
+        return {
+            sqldate: parseTime(item.sqldate.split('T')[0]),
+            count: item.count,
+            type: "Conflict"
+        }
+    })
+    let data = dataCoop.concat(dataConf).filter(item => item.count > 10).sort((x, y) => d3.ascending(x.sqldate, y.sqldate))
 
-    data = dataCoop.concat(dataConf).sort((x, y) => d3.ascending(x.sqldate, y.sqldate))
-
+    console.log(data);
     const color = d3.scaleOrdinal(d3.schemeTableau10)
 
     const min_x = d3.min(data.map(d => d.sqldate))
@@ -42,17 +57,17 @@ export default async function (country) {
     var max_y = d3.max([d3.max(dataConf, d => d.count), d3.max(dataCoop, d => d.count)])
 
     const ax = d3.scaleTime()
-        .domain([min_x, max_x])
+        .domain(d3.extent(data.map(d => d.sqldate)))
         .range([0, width])
 
     const ay = d3.scaleLinear()
-        .domain([0, max_y])
+        .domain(d3.extent(data, d => d.count))
         .range([height, 0])
 
     svg.selectAll("path")
         .data(d3.group(data, d => d.type).values())
         .join("path")
-        .attr("d", d3.line(d => ax(d.sqldate) , d => ay(d.count) ))
+        .attr("d", d3.line(d => ax(d.sqldate), d => ay(d.count)))
         .attr("transform", `translate(${padding},${padding})`)
         .attr("fill", "none")
         .attr("stroke", d => color(d[0].type))

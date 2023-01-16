@@ -38,43 +38,6 @@ app.get('/api/event/bycountry/:country', async (req, res) => {
   res.status(200).json(result);
 });
 
-app.get('/api/event/source/bytarget/:country', async (req, res) => {
-  let cc = req.params.country;
-  let sqlrequest;
-  if (!cc || cc.length < 2) {
-    res.status(400).send();
-    return;
-  }
-  if (cc.length > 2) {
-    cc = cc.charAt(0).toUpperCase() + cc.slice(1).toLowerCase();
-    sqlrequest = 'SELECT * FROM event WHERE ActionGeo_CountryCode=(SELECT fips FROM countrycode where name=$1)'
-  }
-  else {
-    cc = cc.toUpperCase();
-    sqlrequest = 'SELECT * FROM event where ActionGeo_CountryCode=$1'
-  }
-  let result = await db.any(sqlrequest, cc);
-  res.status(200).json(result);
-});
-
-app.get('/api/event/source/byaction/:country', async (req, res) => {
-  let cc = req.params.country;
-  let sqlrequest;
-  if (!cc || cc.length < 2) {
-    res.status(400).send();
-    return;
-  }
-  if (cc.length > 2) {
-    cc = cc.charAt(0).toUpperCase() + cc.slice(1).toLowerCase();
-    sqlrequest = 'SELECT * FROM event WHERE ActionGeo_CountryCode=(SELECT fips FROM countrycode where name=$1)'
-  }
-  else {
-    cc = cc.toUpperCase();
-    sqlrequest = 'SELECT * FROM event where ActionGeo_CountryCode=$1'
-  }
-  let result = await db.any(sqlrequest, cc);
-  res.status(200).json(result);
-});
 
 app.get('/api/event/bydate/from/:from/to/:to', async (req, res) => {
   let from = req.params.from;
@@ -127,6 +90,30 @@ app.get('/api/event/barchart/:country', async (req, res) => {
                 WHERE actor1countrycode = $1 AND actor2countrycode != actor1countrycode
                 GROUP BY actor2countrycode
                 ORDER BY total DESC`
+  let result = await db.any(request, country)
+  res.status(200).json(result);
+});
+
+app.get('/api/event/linechart/:country/conflict', async (req, res) => {
+  country = req.params.country;
+  console.log(country)
+  if (!country || country.length != 3) {
+    res.status(400).send();
+    return;
+  }
+  let request = `select sqldate, quadclass, count(sqldate) from event where actor1countrycode = $1 AND (quadclass = '3' or quadclass = '4') group by sqldate, quadclass`
+  let result = await db.any(request, country)
+  res.status(200).json(result);
+});
+
+app.get('/api/event/linechart/:country/cooperation', async (req, res) => {
+  country = req.params.country;
+  console.log(country)
+  if (!country || country.length != 3) {
+    res.status(400).send();
+    return;
+  }
+  let request = `select sqldate, quadclass, count(sqldate) from event where actor1countrycode = $1 AND (quadclass = '1' or quadclass = '2') group by sqldate, quadclass`
   let result = await db.any(request, country)
   res.status(200).json(result);
 });
