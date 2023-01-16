@@ -14,7 +14,7 @@ export default async function ( code_pays) {
     var width = 600;
     const res = Test(donnees, code_pays);
     let data = res.slice(0, 1);
-    console.log(data)
+    //console.log(data)
     //data = modifyArray(data, traitement_codepays)
 
     let svg = d3.select('#stackedchart');
@@ -38,7 +38,7 @@ export default async function ( code_pays) {
 
 
     let keys = Object.keys(data[0])
-    console.log(keys);
+    //console.log(keys);
 
     keys = keys.filter(v => v !== 'total' && v != 'name')
 
@@ -109,7 +109,7 @@ function Test(data, code_pays) {
     var keys = []
     const donnees = data.filter(d => d.Actor1CountryCode === code_pays)
     const data2 = d3.rollup(donnees, g => g.length, d => d.Actor2CountryCode, d => d.QuadClass)
-    console.log(data2)
+    //console.log(data2)
     for (const [name, value] of data2) {
         var obj1 = Object.fromEntries(value);
         "Calcul du Total"
@@ -127,7 +127,7 @@ function Test(data, code_pays) {
     }
 
     data = arr;
-    console.log(arr)
+    //console.log(arr)
     let obj = data.reduce((res, item) => ({ ...res, ...item }));
     let cles = Object.keys(obj);
 
@@ -147,7 +147,7 @@ function modifyArray(data, map) {
     var resultat = [];
     for (const i in data) {
         var obj = {}
-        console.log(i)
+        //console.log(i)
         obj = i;
         obj['name'] = {}
         obj['name'] = map[i.name]

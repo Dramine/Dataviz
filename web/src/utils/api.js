@@ -18,7 +18,7 @@ export async function getRout(uri) {
 export async function getRoute(uri) {
     let res = await fetch(api_url + uri);
     res = await res.json();
-    console.log(res)
+    //console.log(res)
     res = res.map(function (item) {
         return {
             ...item,

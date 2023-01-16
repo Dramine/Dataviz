@@ -102,12 +102,13 @@ export default {
       // console.log(res[0].sqldate.toString())
       this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('00:00:00')[0], 'value': item.sqldate.toString().split('T')[0] } });
       this.selectedDate = this.date[this.date.length - 1];
-      this.data = await getRout('/api/event/map');
+      //this.data = await getRout('/api/event/map');
+      this.data = await getRoute('/api/event/byday/' + '2021-12-28');
 
       this.createMap(this.data, this.selectedCountry);
-      this.linechart(this.data, 'FR');
-      this.stackedBarChart(this.data, 'USA', 500, 300);
-      this.messagechart(this.data, 'USA', 'FR', 500, 300);
+      //this.linechart(this.data, 'FR');
+      //this.stackedBarChart(this.data, 'USA', 500, 300);
+      this.messagechart(this.data, 'USA', 'GBR', 500, 300);
     },
     test,
     createMap,
