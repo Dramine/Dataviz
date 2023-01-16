@@ -22,7 +22,7 @@ export default async function (country) {
 
     data = data.filter(item => item.actiongeo_countrycode == country).map(d => ({ sqldate: d.sqldate, quadclass: ({ "Verbal Cooperation": "Cooperation", "Material Cooperation": "Cooperation", "Verbal Conflict": "Conflict", "Material Conflict": "Conflict" })[d.quadclass] }))
 
-    console.log(d3.group(data, d => d.quadclass))
+    //console.log(d3.group(data, d => d.quadclass))
     let dataCoop = d3.group(data, d => d.quadclass).get("Cooperation")
     let dataConf = d3.group(data, d => d.quadclass).get("Conflict")
     dataCoop = Array.from(d3.group(dataCoop, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))

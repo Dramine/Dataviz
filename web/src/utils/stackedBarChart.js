@@ -41,7 +41,7 @@ export default async function ( code_pays) {
 
 
     let keys = Object.keys(data[0])
-    console.log(keys);
+    //console.log(keys);
 
     keys = keys.filter(v => v !== 'total' && v != 'name')
 
@@ -134,7 +134,7 @@ function Test(data, code_pays) {
     }
 
     data = arr;
-    console.log(arr)
+    //console.log(arr)
     let obj = data.reduce((res, item) => ({ ...res, ...item }));
     let cles = Object.keys(obj);
 
@@ -155,7 +155,7 @@ function modifyArray(data, map) {
     var resultat = [];
     for (const i in data) {
         var obj = {}
-        console.log(i)
+        //console.log(i)
         obj = i;
         obj['name'] = {}
         obj['name'] = map[i.name]

@@ -27,12 +27,15 @@ export default function (data, selectedCountry) {
         .domain([0, d3.max(Object.values(total_event_by_country))])
         .range(["#173745", "#6cc2f2"])
 
-    const g = svg.append("g")
-        .call(d3.zoom()
+    const g = svg.append("g");
+
+        svg.call(d3.zoom()
             .on("zoom", function (event) {
                 countries.attr("transform", event.transform)
             })
+            .translateExtent([[-300, -400], [1000, 500]])
             .scaleExtent([1, 8])
+            
         );
 
     var projection = d3.geoMercator()
@@ -61,8 +64,8 @@ export default function (data, selectedCountry) {
 
         .on("mousemove", function (e) {
 
-            root.style.setProperty("--mouse-x", `${e.clientX + 15}px`);
-            root.style.setProperty("--mouse-y", `${e.clientY + 15}px`);
+            root.style.setProperty("--mouse-x", `${e.clientX + 10}px`);
+            root.style.setProperty("--mouse-y", `${e.clientY - 30}px`);
         })
         .on("mouseout", function () { d3.select('#tooltip').style('opacity', 0) })
 
@@ -120,7 +123,7 @@ export default function (data, selectedCountry) {
                     selectedCountry.splice(selectedCountry.indexOf(iso_country))
                 }
                 if (selectedCountry.length == 1) {  // si un seul pay est sélécitonnée draw linechart
-                    console.log(data)
+                    //console.log(data)
                     linechart(iso_country);
                     g.selectAll("path")
                         .style("fill", function(d2) {
