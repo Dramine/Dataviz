@@ -8,12 +8,15 @@ let main_event_class = {
 };
 
 export default async function ( code_pays) {
+    console.log("function stacked")
+    console.log(code_pays)
     let donnees = await getRout('/api/event/bycountry/US');
-    
+    donnees = donnees.map(item => {return {...item, quadclass: main_event_class[item.quadclass]}})
+    console.log(donnees);
     var height = 400;
     var width = 600;
     const res = Test(donnees, code_pays);
-    let data = res.slice(0, 1);
+    let data = res.slice(0, 5);
     console.log(data)
     //data = modifyArray(data, traitement_codepays)
 
@@ -105,11 +108,15 @@ export default async function ( code_pays) {
 };
 
 function Test(data, code_pays) {
+    // console.log("function test")
     var arr = []
     var keys = []
-    const donnees = data.filter(d => d.Actor1CountryCode === code_pays)
-    const data2 = d3.rollup(donnees, g => g.length, d => d.Actor2CountryCode, d => d.QuadClass)
-    console.log(data2)
+    // console.log(data.map(item => item.actor1countrycode))
+    const donnees = data.filter(d => d.actor1countrycode === code_pays)
+    // console.log(donnees)
+    const data2 = d3.rollup(donnees, g => g.length, d => d.actor2countrycode, d => d.quadclass)
+    // console.log("data2")
+    // console.log(data2)
     for (const [name, value] of data2) {
         var obj1 = Object.fromEntries(value);
         "Calcul du Total"
@@ -139,7 +146,8 @@ function Test(data, code_pays) {
     let result = arr.map((item) => ({ ...def, ...item }));
 
     result = result.sort(function (a, b) { return b.total - a.total; });
-    result = result.filter(v => v.name !== "" && v.name != code_pays)
+    result = result.filter(v => v.name && v.name !== "" && v.name != code_pays)
+    console.log(result)
     return result;
 }
 

@@ -26,6 +26,40 @@ db.connect()
 app.get('/api/event/bycountry/:country', async (req, res) => {
   let cc = req.params.country;
   let sqlrequest;
+  if (!cc || cc.length != 2) {
+    res.status(400).send();
+    return;
+  }
+  
+  cc = cc.toUpperCase();
+  sqlrequest = 'SELECT * FROM event where actor1countrycode=$1 LIMIT 10000';
+  
+  let result = await db.any(sqlrequest, cc);
+  res.status(200).json(result);
+});
+
+app.get('/api/event/source/bytarget/:country', async (req, res) => {
+  let cc = req.params.country;
+  let sqlrequest;
+  if (!cc || cc.length < 2) {
+    res.status(400).send();
+    return;
+  }
+  if (cc.length > 2) {
+    cc = cc.charAt(0).toUpperCase() + cc.slice(1).toLowerCase();
+    sqlrequest = 'SELECT * FROM event WHERE ActionGeo_CountryCode=(SELECT fips FROM countrycode where name=$1)'
+  }
+  else {
+    cc = cc.toUpperCase();
+    sqlrequest = 'SELECT * FROM event where ActionGeo_CountryCode=$1'
+  }
+  let result = await db.any(sqlrequest, cc);
+  res.status(200).json(result);
+});
+
+app.get('/api/event/source/byaction/:country', async (req, res) => {
+  let cc = req.params.country;
+  let sqlrequest;
   if (!cc || cc.length < 2) {
     res.status(400).send();
     return;
