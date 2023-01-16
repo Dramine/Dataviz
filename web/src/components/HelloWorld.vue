@@ -58,8 +58,7 @@
     <v-row class="mb-0">
       <v-col>
         <v-select v-if="date && date.length > 0 && selectedDate != ''" :items="date" v-model="selectedDate" />
-        <svg id="map" class="bg-white">
-        </svg>
+        <div id="test"><svg id="map" class="bg-white"></svg></div>
       </v-col>
       <v-col>
         <div id="test">
