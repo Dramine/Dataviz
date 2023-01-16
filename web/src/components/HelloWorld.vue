@@ -65,6 +65,7 @@
           <svg id="stackedchart"></svg>
         </div>
         <svg id="linechart"></svg>
+        <svg id="messagechart"></svg>
       </v-col>
     </v-row>
   </v-container>
@@ -75,6 +76,7 @@ import * as d3 from 'd3'
 import test from '../utils/grapahtest'
 import createMap from '../utils/map'
 import linechart from '../utils/linechartConflict';
+import messagechart from '../utils/messageChart';
 import stackedBarChart from '@/utils/stackedBarChart';
 import { getRoute, getDate } from '../utils/api';
 export default {
@@ -103,13 +105,15 @@ export default {
       this.data = await getRoute('/api/event/byday/' + '2021-12-28');
 
       this.createMap(this.data, this.selectedCountry);
-      // this.linechart(this.data, 'FR');
-      // this.stackedBarChart(this.data, 'USA', 500, 300);
+      this.linechart(this.data, 'FR');
+      this.stackedBarChart(this.data, 'USA', 500, 300);
+      this.messagechart(this.data, 'USA', 'FR', 500, 300);
     },
     test,
     createMap,
     linechart,
-    stackedBarChart
+    stackedBarChart,
+    messagechart
   },
   created() {
     this.loadData()
