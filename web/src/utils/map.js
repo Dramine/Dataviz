@@ -28,7 +28,7 @@ export default function (data, selectedCountry) {
         .range(["#173745", "#6cc2f2"])
 
     const g = svg.append("g")
-        .call(d3.zoom()
+        svg.call(d3.zoom()
             .on("zoom", function (event) {
                 countries.attr("transform", event.transform)
             })
