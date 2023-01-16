@@ -72,7 +72,12 @@ app.get('/api/event/date', async (req, res) => {
 });
 
 app.get('/api/event/map', async (req, res) => {
-  let result = await db.any('SELECT actor1geo_countrycode,actor2geo_countrycode FROM event')
+  let result = await db.any('SELECT actor1geo_countrycode,actor2geo_countrycode FROM event where Actor1Geo_Type = 1 and Actor2Geo_Type = 1')
+  res.status(200).json(result);
+});
+
+app.get('/api/event/map/count', async (req, res) => {
+  let result = await db.any('SELECT actor2geo_countrycode, count(actor2geo_type), avg(goldsteinscale) FROM event where Actor1Geo_Type = 1  AND Actor2Geo_Type = 1 group by actor2geo_countrycode')
   res.status(200).json(result);
 });
 

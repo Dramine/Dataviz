@@ -10,6 +10,11 @@ let main_event_class = {
 
 let parseTime = d3.timeParse("%Y-%m-%d");
 
+export async function getRout(uri) {
+    let res = await fetch(api_url + uri);
+    return await res.json();
+}
+
 export async function getRoute(uri) {
     let res = await fetch(api_url + uri);
     res = await res.json();
@@ -37,5 +42,5 @@ export async function getRoute(uri) {
 export async function getDate() {
     let res = await fetch(api_url + '/api/event/date');
     res = await res.json();
-    return res.map( (item) => { return { 'sqldate': parseTime(item.sqldate.split('T')[0]) } });
+    return res.map((item) => { return { 'sqldate': parseTime(item.sqldate.split('T')[0]) } });
 }
