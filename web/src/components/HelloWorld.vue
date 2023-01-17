@@ -57,7 +57,11 @@
     </v-row>
     <v-row class="mb-0">
       <v-col>
-        <v-select v-if="date && date.length > 0 && selectedDate != ''" :items="date" v-model="selectedDate" />
+        <div class="d-flex">
+          <v-select v-if="date && date.length > 0 && selectedDate != ''" :items="date" v-model="selectedDate" />
+          <v-select v-if="date && date.length > 0 && selectedDate2 != ''" :items="date" v-model="selectedDate2" />
+          <v-btn class="align-self-center">Update</v-btn>
+        </div>
         <div id="test"><svg id="map" class="bg-white"></svg></div>
       </v-col>
       <v-col>
@@ -84,6 +88,7 @@ export default {
   data() {
     return {
       selectedDate: '',
+      selectedDate2: '',
       data: [],
       selectedCountry: [],
       date: [],
@@ -99,12 +104,20 @@ export default {
   methods: {
     async loadData() {
       let res = await getDate();
+      let parseTime = d3.timeParse("%Y-%m-%d");
       // console.log(res[0].sqldate.toString())
-      this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('00:00:00')[0], 'value': item.sqldate.toString().split('T')[0] } });
-      this.selectedDate = this.date[this.date.length - 1];
-      //this.data = await getRout('/api/event/map');
-      this.data = await getRoute('/api/event/byday/' + '2021-12-28');
+      console.log(res)
+      this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('T')[0], 'value': parseTime(item.sqldate.split('T')[0]) } });
+      console.log(this.date)
+      this.selectedDate = this.date[this.date.length - 2];
+      this.selectedDate2 = this.date[this.date.length - 1];
 
+      console.log(this.selectedDate)
+      console.log(this.selectedDate2)
+
+      //this.data = await getRout('/api/event/map');
+      this.data = await getRout('/api/event/bydate/from/' + this.selectedDate.title + '/to/' + this.selectedDate2.title);
+      console.log(this.data)
       this.createMap(this.data, this.selectedCountry);
       //this.linechart(this.data, 'FR');
       //this.stackedBarChart(this.data, 'USA', 500, 300);

@@ -2,6 +2,7 @@ import world from '../assets/countries.json'
 import * as d3 from 'd3'
 import linechart from './linechartConflict';
 import stackedBarChart from './stackedBarChart';
+import recolormap  from './recolormap';
 export default function (data, selectedCountry) {
 
 
@@ -53,7 +54,7 @@ export default function (data, selectedCountry) {
         .style("stroke-width", "1")
         .style("fill", (d) => {
             //if (d['properties']['ISO_A2'] != '-')
-            return color(total_event_by_country[d.properties.ISO_A2])
+            return color(total_event_by_country[d.properties.ISO_A3])
             //return 'black';
         })
 
@@ -75,7 +76,7 @@ export default function (data, selectedCountry) {
                 var selected = d3.select(this);
                 if (d3.select(this).style("fill") === "yellow") {
                     counter--;
-                    selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A2']]); });
+                    selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     
                 }
 
@@ -84,7 +85,7 @@ export default function (data, selectedCountry) {
                 // deselect a country and give it back its color 1 when only one was selected
                 if (d3.select(this).style("fill") === "yellow") {
                     counter--;
-                    selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A2']]); });
+                    selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     d3.select("#linechart").selectAll("*").remove();
                     d3.select("#stackedchart").selectAll("*").remove();
                 }
@@ -94,7 +95,8 @@ export default function (data, selectedCountry) {
                         d3.select(this).style("fill", "yellow")
                         counter++;
                         linechart(d.properties.ISO_A3);
-                        stackedBarChart(d.properties.ISO_A3); 
+                        stackedBarChart(d.properties.ISO_A3);
+                        recolormap(d.properties.ISO_A3);
                     }else{
                         console.log("im executed")
                         d3.select(this).style("fill", "yellow")
@@ -158,7 +160,7 @@ export default function (data, selectedCountry) {
 }
 
 const num_event_by_country = (event) => event
-    .map((event2) => event2.actor1geo_countrycode)
+    .map((event2) => event2.actor1countrycode)
     .reduce(function (x, y) {
         x[y] ? (x[y] = x[y] + 1) : (x[y] = 1);
         return x;

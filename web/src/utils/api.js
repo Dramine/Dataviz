@@ -42,5 +42,5 @@ export async function getRoute(uri) {
 export async function getDate() {
     let res = await fetch(api_url + '/api/event/date');
     res = await res.json();
-    return res.map((item) => { return { 'sqldate': parseTime(item.sqldate.split('T')[0]) } });
+    return res //.map((item) => { return { 'sqldate': parseTime(item.sqldate.split('T')[0]) } });
 }

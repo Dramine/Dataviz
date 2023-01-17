@@ -48,7 +48,7 @@ app.get('/api/event/bydate/from/:from/to/:to', async (req, res) => {
     return;
   }
   console.log(req.params);
-  let result = await db.any('SELECT * FROM event WHERE sqldate > $1 AND sqldate < $2', [req.params.from, req.params.to])
+  let result = await db.any(`SELECT * FROM event WHERE sqldate >= $1 AND sqldate <= $2 and actor1countrycode != '' and actor2countrycode != ''`, [req.params.from, req.params.to])
 
   res.status(200).json(result);
 });
@@ -64,7 +64,7 @@ app.get('/api/event/byday/:date', async (req, res) => {
 });
 
 app.get('/api/event/date', async (req, res) => {
-  let result = await db.any('SELECT DISTINCT sqldate FROM event', [req.params.from, req.params.to])
+  let result = await db.any('SELECT DISTINCT sqldate FROM event order by sqldate asc', [req.params.from, req.params.to])
   res.status(200).json(result);
 });
 
@@ -74,7 +74,7 @@ app.get('/api/event/map', async (req, res) => {
 });
 
 app.get('/api/event/map/count', async (req, res) => {
-  let result = await db.any('SELECT actor2geo_countrycode, count(actor2geo_type), avg(goldsteinscale) FROM event where Actor1Geo_Type = 1  AND Actor2Geo_Type = 1 group by actor2geo_countrycode')
+  let result = await db.any(`SELECT actor2countrycode, count(actor2countrycode), avg(goldsteinscale) FROM event where actor1countrycode != '' and actor2countrycode != '' `)
   res.status(200).json(result);
 });
 
