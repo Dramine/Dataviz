@@ -108,7 +108,7 @@ export default {
       this.createMap(this.data, this.selectedCountry);
       //this.linechart(this.data, 'FR');
       //this.stackedBarChart(this.data, 'USA', 500, 300);
-      this.messagechart(this.data, 'USA', 'GBR', 500, 300);
+      this.messagechart(this.data, 'USA', 'GBR', 700, 500);
     },
     test,
     createMap,

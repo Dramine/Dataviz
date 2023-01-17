@@ -18,6 +18,7 @@ export default function (data, selectedCountry) {
         .style("border-radius", "10px")
         .style("font-family", "Tahoma")
         .style("position", 'fixed')
+        .style("display", "none")
         .style("left", "var(--mouse-x)")
         .style("top", "var(--mouse-y)");
 
