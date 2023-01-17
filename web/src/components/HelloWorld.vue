@@ -70,6 +70,7 @@
         </div>
         <svg id="linechart"></svg>
         <svg id="messagechart"></svg>
+        <svg id="msgscroll"></svg>
       </v-col>
     </v-row>
   </v-container>
@@ -106,22 +107,22 @@ export default {
       let res = await getDate();
       let parseTime = d3.timeParse("%Y-%m-%d");
       // console.log(res[0].sqldate.toString())
-      console.log(res)
+      //console.log(res)
       this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('T')[0], 'value': parseTime(item.sqldate.split('T')[0]) } });
-      console.log(this.date)
+      //console.log(this.date)
       this.selectedDate = this.date[this.date.length - 2];
       this.selectedDate2 = this.date[this.date.length - 1];
 
-      console.log(this.selectedDate)
-      console.log(this.selectedDate2)
+      //console.log(this.selectedDate)
+      //console.log(this.selectedDate2)
 
       //this.data = await getRout('/api/event/map');
       this.data = await getRout('/api/event/bydate/from/' + this.selectedDate.title + '/to/' + this.selectedDate2.title);
-      console.log(this.data)
+      //console.log(this.data)
       this.createMap(this.data, this.selectedCountry);
       //this.linechart(this.data, 'FR');
       //this.stackedBarChart(this.data, 'USA', 500, 300);
-      this.messagechart(this.data, 'USA', 'GBR', 700, 500);
+      //this.messagechart(this.data, 'USA', 'GBR', 500, 500);
     },
     test,
     createMap,

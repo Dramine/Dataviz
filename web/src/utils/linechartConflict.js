@@ -18,64 +18,52 @@ export default async function (country) {
     d3.select("#linechart").selectAll("*").remove();
     let svg = d3.select("#linechart").attr("width", width + padding * 2 + legdmarg).attr("height", height + padding * 2);
 
-    // let data = await getRoute('/api/event/bycountry/USA');
-
-    // data = data.filter(item => item.actiongeo_countrycode == country).map(d => ({ sqldate: d.sqldate, quadclass: ({ "Verbal Cooperation": "Cooperation", "Material Cooperation": "Cooperation", "Verbal Conflict": "Conflict", "Material Conflict": "Conflict" })[d.quadclass] }))
-
-    //console.log(d3.group(data, d => d.quadclass))
-    // let dataCoop = d3.group(data, d => d.quadclass).get("Cooperation")
-    // let dataConf = d3.group(data, d => d.quadclass).get("Conflict")
-    // dataCoop = Array.from(d3.group(dataCoop, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))
-    // dataConf = Array.from(d3.group(dataConf, d => d.sqldate)).map(d => ({ sqldate: d[0], count: d[1].length }))
-
-    // dataCoop = dataCoop.map(d => ({ sqldate: d.sqldate, count: d.count, type: "Cooperation" }))
-    // dataConf = dataConf.map(d => ({ sqldate: d.sqldate, count: d.count, type: "Conflict" }))
     let parseTime = d3.timeParse("%Y-%m-%d");
     let dataCoop = (await getRout('/api/event/linechart/' + country + '/cooperation')).map(item => {
         return {
             sqldate: parseTime(item.sqldate.split('T')[0]),
-            count: item.count,
-            type: "Cooperation"
+            count: parseInt(item.count),
+            type: main_event_class[item.quadclass],
+	    medium: {1: "Verbal", 3: "Verbal", 2: "Material", 4: "Material"}[item.quadclass],
+	    interaction: {1: "Cooperation", 2: "Cooperation", 3: "Conflict", 4: "Conflict"}[item.quadclass]
         }
     })
+
     let dataConf = (await getRout('/api/event/linechart/' + country + '/conflict')).map(item => {
         return {
             sqldate: parseTime(item.sqldate.split('T')[0]),
-            count: item.count,
-            type: "Conflict"
+            count: parseInt(item.count),
+            type: main_event_class[item.quadclass],
+	    medium: {1: "Verbal", 3: "Verbal", 2: "Material", 4: "Material"}[item.quadclass],
+	    interaction: {1: "Cooperation", 2: "Cooperation", 3: "Conflict", 4: "Conflict"}[item.quadclass]
         }
     })
-    let data = dataCoop.concat(dataConf).filter(item => item.count > 10).sort((x, y) => d3.ascending(x.sqldate, y.sqldate))
 
-    console.log(data);
+    let data = dataCoop.concat(dataConf)
+
     const color = d3.scaleOrdinal(d3.schemeTableau10)
-
-    const min_x = d3.min(data.map(d => d.sqldate))
-    const max_x = d3.max(data.map(d => d.sqldate))
-    // const min_x = new Date(max_x - 6 * 24 * 3600 * 1000)
-
-    var max_y = d3.max([d3.max(dataConf, d => d.count), d3.max(dataCoop, d => d.count)])
 
     const ax = d3.scaleTime()
         .domain(d3.extent(data.map(d => d.sqldate)))
         .range([0, width])
 
     const ay = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.count))
+        .domain(d3.extent(data.map(d => d.count)))
         .range([height, 0])
 
-    svg.selectAll("path")
-        .data(d3.group(data, d => d.type).values())
+    svg.append("g")
+	.selectAll("path")
+        .data(d3.group(data, d => d.interaction).values())
         .join("path")
         .attr("d", d3.line(d => ax(d.sqldate), d => ay(d.count)))
         .attr("transform", `translate(${padding},${padding})`)
         .attr("fill", "none")
-        .attr("stroke", d => color(d[0].type))
+        .attr("stroke", d => color(d[0].interaction))
         .attr("stroke-width", 1.5)
 
 
     var lgd_itm = 0
-    for (const i of d3.group(data, d => d.type).keys()) {
+    for (const i of d3.group(data, d => d.interaction).keys()) {
         svg.append("path")
             .attr("d", d3.symbol(d3.symbolSquare, 60))
             .attr("fill", d => color(i))
@@ -101,7 +89,4 @@ export default async function (country) {
     svg.append("g")
         .attr("transform", `translate(${padding},${padding})`)
         .call(d3.axisLeft(ay))
-
-    // document.getElementById('test').innerHTML = svg
-    // console.log(svg)
 }
