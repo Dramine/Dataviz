@@ -41,6 +41,8 @@ export default async function (country) {
 
     let data = dataCoop.concat(dataConf)
 
+    data = data.filter(d => d.sqldate > parseTime("2021-09-01"))
+
     const color = d3.scaleOrdinal(d3.schemeTableau10)
 
     const ax = d3.scaleTime()
