@@ -142,9 +142,11 @@ export default function (data, country1, country2, width, height) {
 		 .attr("points", arrowheadpath)
 		 .attr("fill", "white")
 
-	dategrp.selectAll("text")
+	dategrp.selectAll("a")
 	       .data(test_data)
 	       .enter()
+	       .append("a")
+	       .attr("href", d => d.sourceurl)
 	       .append("text")
 	       .text(d => `${d.sqldate.getFullYear()}-${d.sqldate.getMonth()+1}-${d.sqldate.getDate()}`)
 	       .attr("x", () => width - margin_right + 4)
