@@ -71,7 +71,7 @@ export default function (data, selectedCountry) {
         })
         .on("mouseout", function () { d3.select('#tooltip').style('opacity', 0) })
 
-        .on('click', function (e, d) {
+        .on('click', async function (e, d) {
             // if 2 countries are selected we can deselect and it will be recolored to its original  
             if (counter == 2) {
                 var selected = d3.select(this);
@@ -93,11 +93,11 @@ export default function (data, selectedCountry) {
                 // select a country or even 2 
                 else {
                     if (counter == 0) {
-                        d3.select(this).style("fill", "yellow")
                         counter++;
                         linechart(d.properties.ISO_A3);
                         stackedBarChart(d.properties.ISO_A3);
-                        recolormap(d.properties.ISO_A3);
+                        await recolormap(d.properties.ISO_A3);
+                        d3.select(this).style("fill", "yellow")
                     }else{
                         //console.log("im executed")
                         d3.select(this).style("fill", "yellow")

@@ -14,8 +14,5 @@ export default async function (country) {
                 console.log(res[res.findIndex(item => item.actor2countrycode == d['properties']['ISO_A3'])]);
                 return color(res[res.findIndex(item => item.actor2countrycode == d['properties']['ISO_A3'])].count)
             }
-            if(d['properties']['ISO_A3'] == country) {
-                return 'yellow';
-            }
         })
 }
