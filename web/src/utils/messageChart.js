@@ -2,9 +2,10 @@ import * as d3 from 'd3'
 
 export default function (data, country1, country2, width, height) {
 	d3.select("#messagechart").selectAll("*").remove();
+	d3.select("#msgscroll").selectAll("*").remove();
 
-	const margin_left = 100;
-	const margin_right = 300;
+	const margin_left = 20;
+	const margin_right = 100;
 	const margin_y = 50;
 
 	/*
@@ -19,7 +20,8 @@ export default function (data, country1, country2, width, height) {
 			&& [country1, country2].includes(d.actor2countrycode)
 			&& d.actor1countrycode != d.actor2countrycode));
 
-	test_data = d3.sort(test_data, (x,y) => x.globaleventid - y.globaleventid);
+	test_data = d3.sort(test_data, (x,y) => y.globaleventid - x.globaleventid).map(d => ({...d, sqldate: d3.timeParse("%Y-%m-%d")(d.sqldate.split('T')[0])}));
+
 	/* END TEST SAMPLE
 	 */
 
@@ -31,6 +33,10 @@ export default function (data, country1, country2, width, height) {
 	let svg = d3.select("#messagechart")
 		    .attr("width", width)
 		    .attr("height", height);
+
+	let svg_scrl = d3.select("#msgscroll")
+		         .attr("width", 20)
+		         .attr("height", height);
 	/* END DEFINITION
 	 */
 
@@ -39,11 +45,12 @@ export default function (data, country1, country2, width, height) {
 	 * AXIS
 	 *
 	 */
-	let axscl = d3.scaleLinear([0, test_data.length],[height - margin_y, 0]);
+	let scaling_factor = test_data.length/12
+	let axscl = d3.scaleLinear([0, test_data.length],[(height - margin_y)*scaling_factor, 0]);
 
 	let span = ax => ((ext => ext[1] - ext[0])(d3.extent(ax.range())))
 
-	let ax = d3.axisLeft(axscl);
+	//let ax = d3.axisLeft(axscl);
 	/* END AXIS
 	 */
 
@@ -123,7 +130,6 @@ export default function (data, country1, country2, width, height) {
 		const start = d.actor1countrycode === country1 ? width - margin_right : margin_left;
 		const side = d.actor1countrycode === country1 ? -headlength : headlength
 		const y = axscl(i)
-
 		return `${start},${y} ${start+side},${y-headwidth} ${start+side},${y+headwidth}`
 	}
 
@@ -138,14 +144,26 @@ export default function (data, country1, country2, width, height) {
 	       .data(test_data)
 	       .enter()
 	       .append("text")
-	       .text(d => `${d.sqldate.getFullYear()}-${d.sqldate.getMonth()}-${d.sqldate.getDate()}`)
-	       .attr("x", d => width - margin_right + 4)
+	       .text(d => `${d.sqldate.getFullYear()}-${d.sqldate.getMonth()+1}-${d.sqldate.getDate()}`)
+	       .attr("x", () => width - margin_right + 4)
 	       .attr("y", (d, i) => axscl(i) + 5)
 	       .attr("fill", "white")
 
 	/* END ARROWS
 	 */
 	
+	/*
+	 * SCROLL
+	 *
+	 */
+	let scrollrect = svg_scrl.append("rect")
+		             .attr("y", margin_y)
+		             .attr("height", 20)
+		             .attr("width", 20)
+		             .attr("rx", 10)
+		             .attr("fill", "grey")
+	/*
+	 */
 
 	/*
 	 * ZOOM
@@ -157,6 +175,29 @@ export default function (data, country1, country2, width, height) {
 			arrowshaft.attr("transform", `translate(0,${trs.y})`);
 			arrowhead.attr("transform", `translate(0,${trs.y})`);
 			dategrp.attr("transform", `translate(0,${trs.y})`);
+			scrollrect.attr("transform", `translate(0,${-trs.y/scaling_factor})`);
+
+			arrowshaft.selectAll("line")
+			          .join(enter => enter
+				       ,update => update.attr("visibility", (d, i) => trs.y + axscl(i) - margin_y > 0?"visible":"hidden"))
+
+			arrowhead.selectAll("polygon")
+			          .join(enter => enter
+				       ,update => update.attr("visibility", (d, i) => trs.y + axscl(i) - margin_y > 0?"visible":"hidden"))
+
+			dategrp.selectAll("text")
+			          .join(enter => enter
+				       ,update => update.attr("visibility", (d, i) => trs.y + axscl(i) - margin_y > 0?"visible":"hidden"))
+
+		   }))
+
+	svg_scrl.call(d3.zoom()
+	           .on("zoom", (e) => {
+		        let trs = e.transform
+			arrowshaft.attr("transform", `translate(0,${-trs.y*scaling_factor})`);
+			arrowhead.attr("transform", `translate(0,${-trs.y*scaling_factor})`);
+			dategrp.attr("transform", `translate(0,${-trs.y*scaling_factor})`);
+			scrollrect.attr("transform", `translate(0,${trs.y})`);
 
 			arrowshaft.selectAll("line")
 			          .join(enter => enter

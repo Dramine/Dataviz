@@ -2,6 +2,7 @@ import world from '../assets/countries.json'
 import * as d3 from 'd3'
 import linechart from './linechartConflict';
 import stackedBarChart from './stackedBarChart';
+import messageChart from './messageChart';
 import recolormap  from './recolormap';
 import { selectAll } from 'd3';
 export default function (data, selectedCountry) {
@@ -10,8 +11,11 @@ export default function (data, selectedCountry) {
     const width = 700, height = 500;
     var counter = 0;
     var maxRegions = 2;
+    var c1;
+    var c2;
+
     const svg = d3.select("#map").attr("width", width).attr("height", height);
-    // svg.append("svg")
+
     const total_event_by_country = num_event_by_country(data)
     d3.select('#test').append('div')
         .attr('id', 'tooltip')
@@ -24,6 +28,7 @@ export default function (data, selectedCountry) {
         .style("left", "var(--mouse-x)")
         .style("top", "var(--mouse-y)");
 
+    
     const root = document.documentElement
 
     const color = d3.scaleLinear()
@@ -78,6 +83,10 @@ export default function (data, selectedCountry) {
                 var selected = d3.select(this);
                 if (d3.select(this).style("fill") === "red") {
                     counter--;
+		    if (d.properties.ISO_A3 == c1) {
+			    c1 = c2
+		    }
+		    c2 = null
                     selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     
                 }
@@ -87,13 +96,13 @@ export default function (data, selectedCountry) {
                 // deselect a country and give it back its color 1 when only one was selected
                 if (d3.select(this).style("fill") === "red") {
                     counter--;
+
+
                     selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     d3.select("#linechart").selectAll("*").remove();
                     d3.select("#stackedchart").selectAll("*").remove();
                     selectAll('path').style("fill", (d) => {
-                 
                         return color(total_event_by_country[d.properties.ISO_A3])
-                        
                     })
                 }
                 // select a country or even 2 
@@ -101,11 +110,16 @@ export default function (data, selectedCountry) {
                     if (counter == 0) {
                         counter++;
                         linechart(d.properties.ISO_A3);
+
+			c1 = d.properties.ISO_A3;
+
                         stackedBarChart(d.properties.ISO_A3);
                         await recolormap(d.properties.ISO_A3);
                         d3.select(this).style("fill", "red")
                     }else{
                         //console.log("im executed")
+			c2 = d.properties.ISO_A3
+			messageChart(data, c1, c2, 500, 500)
                         d3.select(this).style("fill", "red")
                         counter++;
                         d3.select("#linechart").selectAll("*").remove();

@@ -8,8 +8,8 @@ let main_event_class = {
 };
 
 export default async function (code_pays) {
-    console.log("function stacked")
-    console.log(code_pays)
+    //console.log("function stacked")
+    //console.log(code_pays)
     // let donnees = await getRout('/api/event/bycountry/USA');
     // donnees = donnees.map(item => {return {...item, quadclass: main_event_class[item.quadclass]}})
     // console.log(donnees);
@@ -17,9 +17,9 @@ export default async function (code_pays) {
     var width = 600;
     // const res = Test(donnees, code_pays);
     let res = await getRout('/api/event/barchart/' + code_pays)
-    console.log(res)
+    //console.log(res)
     let data = res.slice(0, 5);
-    console.log(data)
+    //console.log(data)
     //data = modifyArray(data, traitement_codepays)
 
     let svg = d3.select('#stackedchart');
@@ -149,7 +149,7 @@ function Test(data, code_pays) {
 
     result = result.sort(function (a, b) { return b.total - a.total; });
     result = result.filter(v => v.name && v.name !== "" && v.name != code_pays)
-    console.log(result)
+    //console.log(result)
     return result;
 }
 
