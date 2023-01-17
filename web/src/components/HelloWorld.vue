@@ -60,7 +60,7 @@
         <div class="d-flex">
           <v-select v-if="date && date.length > 0 && selectedDate != ''" :items="date" v-model="selectedDate" />
           <v-select v-if="date && date.length > 0 && selectedDate2 != ''" :items="date" v-model="selectedDate2" />
-          <v-btn class="align-self-center">Update</v-btn>
+          <v-btn @click="updateData" class="align-self-center">Update</v-btn>
         </div>
         <div id="test"><svg id="map" class="bg-white"></svg></div>
       </v-col>
@@ -112,8 +112,8 @@ export default {
       this.selectedDate = this.date[this.date.length - 2];
       this.selectedDate2 = this.date[this.date.length - 1];
 
-      console.log(this.selectedDate)
-      console.log(this.selectedDate2)
+      // console.log(this.selectedDate.toString().split(' 00:00:00')[0])
+      // console.log(this.selectedDate2)
 
       //this.data = await getRout('/api/event/map');
       this.data = await getRout('/api/event/bydate/from/' + this.selectedDate.title + '/to/' + this.selectedDate2.title);
@@ -122,6 +122,11 @@ export default {
       //this.linechart(this.data, 'FR');
       //this.stackedBarChart(this.data, 'USA', 500, 300);
       this.messagechart(this.data, 'USA', 'GBR', 700, 500);
+    },
+    async updateData() {
+      console.log(this.selectedDate.toString().split(' 00:00:00')[0].slice(4))
+      console.log(this.selectedDate2)
+      this.data = await getRout('/api/event/bydate/from/' + this.selectedDate.title + '/to/' + this.selectedDate2.title);
     },
     test,
     createMap,
