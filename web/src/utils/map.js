@@ -62,7 +62,7 @@ export default function (data, selectedCountry) {
 
         .on("mouseover", (e, d) => {
 
-            d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(d.properties.ADMIN)
+            d3.select('#tooltip').transition().duration(200).style('opacity', 1).style("display", "block").text(d.properties.ADMIN)
         })
 
         .on("mousemove", function (e) {
@@ -76,7 +76,7 @@ export default function (data, selectedCountry) {
             // if 2 countries are selected we can deselect and it will be recolored to its original  
             if (counter == 2) {
                 var selected = d3.select(this);
-                if (d3.select(this).style("fill") === "yellow") {
+                if (d3.select(this).style("fill") === "red") {
                     counter--;
                     selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     
@@ -85,7 +85,7 @@ export default function (data, selectedCountry) {
             } else if (counter < maxRegions && counter >= 0) {
                 var selected = d3.select(this);
                 // deselect a country and give it back its color 1 when only one was selected
-                if (d3.select(this).style("fill") === "yellow") {
+                if (d3.select(this).style("fill") === "red") {
                     counter--;
                     selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     d3.select("#linechart").selectAll("*").remove();
@@ -103,10 +103,10 @@ export default function (data, selectedCountry) {
                         linechart(d.properties.ISO_A3);
                         stackedBarChart(d.properties.ISO_A3);
                         await recolormap(d.properties.ISO_A3);
-                        d3.select(this).style("fill", "yellow")
+                        d3.select(this).style("fill", "red")
                     }else{
                         //console.log("im executed")
-                        d3.select(this).style("fill", "yellow")
+                        d3.select(this).style("fill", "red")
                         counter++;
                         d3.select("#linechart").selectAll("*").remove();
                          
@@ -120,7 +120,7 @@ export default function (data, selectedCountry) {
         })/* 
             const iso_country = d['properties']['ISO_A2']
             if (selectedCountry.length < 2) {
-                d3.select(this).style("fill", "yellow")
+                d3.select(this).style("fill", "red")
                 if (!selectedCountry.includes(iso_country))
                     selectedCountry.push(iso_country)
                 else {
@@ -145,7 +145,7 @@ export default function (data, selectedCountry) {
                                     return color(num_event_by_country(data.filter(event => event['actor1geo_countrycode'] == d['properties']['ISO_A2'] || event['actor2geo_countrycode'] == d['properties']['ISO_A2']))[d2['properties']['ISO_A2']])
                                 }
                                 else {
-                                    return 'yellow';
+                                    return 'red';
                                 }
                             }
                             //else
