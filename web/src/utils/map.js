@@ -102,9 +102,7 @@ export default function (data, selectedCountry) {
                     d3.select("#linechart").selectAll("*").remove();
                     d3.select("#stackedchart").selectAll("*").remove();
                     selectAll('path').style("fill", (d) => {
-                 
                         return color(total_event_by_country[d.properties.ISO_A3])
-                        
                     })
                 }
                 // select a country or even 2 
@@ -120,6 +118,8 @@ export default function (data, selectedCountry) {
                         d3.select(this).style("fill", "red")
                     }else{
                         //console.log("im executed")
+			c2 = d.properties.ISO_A3
+			messageChart(data, c1, c2, 500, 500)
                         d3.select(this).style("fill", "red")
                         counter++;
                         d3.select("#linechart").selectAll("*").remove();

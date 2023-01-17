@@ -2,6 +2,7 @@ import * as d3 from 'd3'
 
 export default function (data, country1, country2, width, height) {
 	d3.select("#messagechart").selectAll("*").remove();
+	d3.select("#msgscroll").selectAll("*").remove();
 
 	const margin_left = 20;
 	const margin_right = 100;
