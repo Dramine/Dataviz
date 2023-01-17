@@ -3,6 +3,7 @@ import * as d3 from 'd3'
 import linechart from './linechartConflict';
 import stackedBarChart from './stackedBarChart';
 import recolormap  from './recolormap';
+import { selectAll } from 'd3';
 export default function (data, selectedCountry) {
 
 
@@ -89,6 +90,11 @@ export default function (data, selectedCountry) {
                     selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
                     d3.select("#linechart").selectAll("*").remove();
                     d3.select("#stackedchart").selectAll("*").remove();
+                    selectAll('path').style("fill", (d) => {
+                 
+                        return color(total_event_by_country[d.properties.ISO_A3])
+                        
+                    })
                 }
                 // select a country or even 2 
                 else {
