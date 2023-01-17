@@ -32,7 +32,9 @@ export default function (data, country1, country2, width, height) {
 	 */
 	let svg = d3.select("#messagechart")
 		    .attr("width", width)
-		    .attr("height", height);
+		    .attr("height", height)
+			.style("top",'500px')
+		
 
 	let svg_scrl = d3.select("#msgscroll")
 		         .attr("width", 20)
