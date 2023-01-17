@@ -19,6 +19,7 @@ export default function (data, selectedCountry) {
         .style("border-radius", "10px")
         .style("font-family", "Tahoma")
         .style("position", 'fixed')
+        .style("display", "none")
         .style("left", "var(--mouse-x)")
         .style("top", "var(--mouse-y)");
 
@@ -98,7 +99,7 @@ export default function (data, selectedCountry) {
                         stackedBarChart(d.properties.ISO_A3);
                         recolormap(d.properties.ISO_A3);
                     }else{
-                        console.log("im executed")
+                        //console.log("im executed")
                         d3.select(this).style("fill", "yellow")
                         counter++;
                         d3.select("#linechart").selectAll("*").remove();
@@ -109,7 +110,7 @@ export default function (data, selectedCountry) {
 
 
             }
-            console.log(counter)
+            //console.log(counter)
         })/* 
             const iso_country = d['properties']['ISO_A2']
             if (selectedCountry.length < 2) {
