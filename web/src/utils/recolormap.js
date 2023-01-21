@@ -12,7 +12,7 @@ export default async function (country) {
         .style("fill", function (d) {
             if (res[res.findIndex(item => item.actor2countrycode == d['properties']['ISO_A3'])]) {
                 //console.log(res[res.findIndex(item => item.actor2countrycode == d['properties']['ISO_A3'])]);
-                return color(res[res.findIndex(item => item.actor2countrycode == d['properties']['ISO_A3'])].count)
+                return color(res[res.findIndex(item => item.actor2countrycode == d['properties']['ISO_A3'])].avg)
             }
         })
 }

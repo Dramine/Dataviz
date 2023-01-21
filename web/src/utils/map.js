@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 import linechart from './linechartConflict';
 import stackedBarChart from './stackedBarChart';
 import messageChart from './messageChart';
-import recolormap  from './recolormap';
+import recolormap from './recolormap';
 import { selectAll } from 'd3';
 export default function (data, selectedCountry) {
 
@@ -28,7 +28,7 @@ export default function (data, selectedCountry) {
         .style("left", "var(--mouse-x)")
         .style("top", "var(--mouse-y)");
 
-    
+
     const root = document.documentElement
 
     const color = d3.scaleLinear()
@@ -37,14 +37,14 @@ export default function (data, selectedCountry) {
 
     const g = svg.append("g");
 
-        svg.call(d3.zoom()
-            .on("zoom", function (event) {
-                countries.attr("transform", event.transform)
-            })
-            .translateExtent([[-300, -400], [1000, 500]])
-            .scaleExtent([1, 8])
-            
-        );
+    svg.call(d3.zoom()
+        .on("zoom", function (event) {
+            countries.attr("transform", event.transform)
+        })
+        .translateExtent([[-300, -400], [1000, 500]])
+        .scaleExtent([1, 8])
+
+    );
 
     var projection = d3.geoMercator()
         .scale(200)
@@ -82,13 +82,16 @@ export default function (data, selectedCountry) {
             if (counter == 2) {
                 var selected = d3.select(this);
                 if (d3.select(this).style("fill") === "red") {
+
                     counter--;
-		    if (d.properties.ISO_A3 == c1) {
-			    c1 = c2
-		    }
-		    c2 = null
+                    if (d.properties.ISO_A3 == c1) {
+                        c1 = c2;
+
+                    }
+                    c2 = null
                     selected.style("fill", function (d) { return color(total_event_by_country[d['properties']['ISO_A3']]); });
-                    
+
+
                 }
 
             } else if (counter < maxRegions && counter >= 0) {
@@ -111,19 +114,20 @@ export default function (data, selectedCountry) {
                         counter++;
                         linechart(d.properties.ISO_A3);
 
-			c1 = d.properties.ISO_A3;
+                        c1 = d.properties.ISO_A3;
 
                         stackedBarChart(d.properties.ISO_A3);
                         await recolormap(d.properties.ISO_A3);
-                        d3.select(this).style("fill", "red")
-                    }else{
+                        d3.select(this).style("fill", "red");
+                    } else {
                         //console.log("im executed")
-			c2 = d.properties.ISO_A3
-			messageChart(data, c1, c2, 500, 500)
+                        c2 = d.properties.ISO_A3
+                        messageChart(data, c1, c2, 500, 500)
                         d3.select(this).style("fill", "red")
                         counter++;
                         d3.select("#linechart").selectAll("*").remove();
-                         
+                        d3.select("#stackedchart").selectAll("*").remove();
+
                     }
 
                 }
