@@ -140,7 +140,12 @@ export default function (data, country1, country2, width, height) {
 	         .enter()
 		 .append("polygon")
 		 .attr("points", arrowheadpath)
-		 .attr("fill", "white")
+		 .attr("fill", function(d) {
+			if(d.quadclass < 2)
+				return "green"; 
+			else
+				return "red"
+		 })
 
 	dategrp.selectAll("a")
 	       .data(test_data)

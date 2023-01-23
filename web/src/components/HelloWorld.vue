@@ -31,7 +31,11 @@
     <v-row>
       <v-spacer />
       <v-col class="text-center v-col-6">
-        <h2>Visualisation global des données</h2>
+        <h2>Présentation des graphiques</h2>
+        <h3>La carte</h3>
+        Par défaut la carte affiche la densité des evenements qui se sont produit dans ce pays.
+
+        Lorsque vous cliquer sur un pays de
         Nos données étant trop volumineuse, il est impossible de charger la totalité des données directement, nous
         utiliserons donc une api pour requeter uniqument les données dont nous avons besoin, quand nous en avons besoin.
       </v-col>
@@ -60,7 +64,7 @@
         <div class="d-flex">
           <v-select v-if="date && date.length > 0 && selectedDate != ''" :items="date" v-model="selectedDate" />
           <v-select v-if="date && date.length > 0 && selectedDate2 != ''" :items="date" v-model="selectedDate2" />
-          <v-btn @click="updateData" class="align-self-center">Update</v-btn>
+          <v-btn @click="updateData" class="align-self-center" color="black">Update</v-btn>
         </div>
         <div id="test"><svg id="map" class="bg-white"></svg></div>
       </v-col>
@@ -93,6 +97,7 @@ export default {
       data: [],
       selectedCountry: [],
       date: [],
+      date2: []
     }
   },
   watch: {
@@ -108,21 +113,15 @@ export default {
       let parseTime = d3.timeParse("%Y-%m-%d");
       // console.log(res[0].sqldate.toString())
       //console.log(res)
-      this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('T')[0], 'value': parseTime(item.sqldate.split('T')[0]) } });
+      this.date = res.map(function (item) { return { 'title': item.sqldate.toString().split('T')[0], 'value': item.sqldate.toString().split('T')[0] } });
       //console.log(this.date)
-      this.selectedDate = this.date[this.date.length - 2];
-      this.selectedDate2 = this.date[this.date.length - 1];
-
-<<<<<<< HEAD
-      // console.log(this.selectedDate.toString().split(' 00:00:00')[0])
-      // console.log(this.selectedDate2)
-=======
-      //console.log(this.selectedDate)
-      //console.log(this.selectedDate2)
->>>>>>> 204080ae81ad07e8e325154d1e4f7d4e11c581e8
+      this.selectedDate = this.date[this.date.length - 2].value;
+      this.selectedDate2 = this.date[this.date.length - 1].value;
 
       //this.data = await getRout('/api/event/map');
-      this.data = await getRout('/api/event/bydate/from/' + this.selectedDate.title + '/to/' + this.selectedDate2.title);
+
+      this.data = await getRout('/api/event/bydate/from/' + this.selectedDate + '/to/' + this.selectedDate2);
+      console.log(this.data)
       //console.log(this.data)
       this.createMap(this.data, this.selectedCountry);
       //this.linechart(this.data, 'FR');
@@ -130,9 +129,11 @@ export default {
       //this.messagechart(this.data, 'USA', 'GBR', 500, 500);
     },
     async updateData() {
-      console.log(this.selectedDate.toString().split(' 00:00:00')[0].slice(4))
-      console.log(this.selectedDate2)
-      this.data = await getRout('/api/event/bydate/from/' + this.selectedDate.title + '/to/' + this.selectedDate2.title);
+      d3.select("#map").selectAll("*").remove();
+      this.selectedCountry = [];
+      this.data = await getRout('/api/event/bydate/from/' + this.selectedDate + '/to/' + this.selectedDate2);
+      console.log(this.data)
+      this.createMap(this.data, this.selectedCountry)
     },
     test,
     createMap,

@@ -78,10 +78,10 @@ export default function (data, selectedCountry) {
         .on("mouseout", function () { d3.select('#tooltip').style('opacity', 0) })
 
         .on('click', async function (e, d) {
-            // if 2 countries are selected we can deselect and it will be recolored to its original  
+            // if 2 countries are selected we can deselect and it will be recoloyellow to its original  
             if (counter == 2) {
                 var selected = d3.select(this);
-                if (d3.select(this).style("fill") === "red") {
+                if (d3.select(this).style("fill") === "yellow") {
 
                     counter--;
                     if (d.properties.ISO_A3 == c1) {
@@ -97,7 +97,7 @@ export default function (data, selectedCountry) {
             } else if (counter < maxRegions && counter >= 0) {
                 var selected = d3.select(this);
                 // deselect a country and give it back its color 1 when only one was selected
-                if (d3.select(this).style("fill") === "red") {
+                if (d3.select(this).style("fill") === "yellow") {
                     counter--;
 
 
@@ -118,12 +118,12 @@ export default function (data, selectedCountry) {
 
                         stackedBarChart(d.properties.ISO_A3);
                         await recolormap(d.properties.ISO_A3);
-                        d3.select(this).style("fill", "red");
+                        d3.select(this).style("fill", "yellow");
                     } else {
                         //console.log("im executed")
                         c2 = d.properties.ISO_A3
                         messageChart(data, c1, c2, 500, 500)
-                        d3.select(this).style("fill", "red")
+                        d3.select(this).style("fill", "yellow")
                         counter++;
                         d3.select("#linechart").selectAll("*").remove();
                         d3.select("#stackedchart").selectAll("*").remove();
@@ -135,53 +135,7 @@ export default function (data, selectedCountry) {
 
             }
             //console.log(counter)
-        })/* 
-            const iso_country = d['properties']['ISO_A2']
-            if (selectedCountry.length < 2) {
-                d3.select(this).style("fill", "red")
-                if (!selectedCountry.includes(iso_country))
-                    selectedCountry.push(iso_country)
-                else {
-                    d3.select(this).style("fill", (d) => {
-                       // if (d['properties']['ISO_A2'] != '-')
-                            return color(total_event_by_country[d['properties']['ISO_A2']])
-                        //return 'black';
-                    })
-                    selectedCountry.splice(selectedCountry.indexOf(iso_country))
-                }
-                if (selectedCountry.length == 1) {  // si un seul pay est sélécitonnée draw linechart
-                    //console.log(data)
-                    linechart(iso_country);
-                    g.selectAll("path")
-                        .style("fill", function(d2) {
-                            // console.log(d2)
-                            if(d2['properties']['ISO_A2'] != '-') {
-                                // console.log()
-                                if(!selectedCountry.includes(d2['properties']['ISO_A2'])) {
-                                    // console.log(num_event_by_country(data.filter(event => event['Actor1Geo_CountryCode'] == d['properties']['ISO_A2'])));
-                                    //return 'blue'
-                                    return color(num_event_by_country(data.filter(event => event['actor1geo_countrycode'] == d['properties']['ISO_A2'] || event['actor2geo_countrycode'] == d['properties']['ISO_A2']))[d2['properties']['ISO_A2']])
-                                }
-                                else {
-                                    return 'red';
-                                }
-                            }
-                            //else
-                               // return 'black';
-                        });
-                }
-                if (selectedCountry.length == 1) // si un seul pay est sélécitonnée draw linechart
-                    linechart(data, iso_country);
-            }
-            else if (selectedCountry.includes(iso_country)) {
-                d3.select(this).style("fill", (d) => {
-                    if (d['properties']['ISO_A2'] != '-')
-                        return color(total_event_by_country[d['properties']['ISO_A2']])
-                    return 'black';
-                })
-                selectedCountry.splice(selectedCountry.indexOf(iso_country))
-            }
-        }); */
+        })
 }
 
 const num_event_by_country = (event) => event
